@@ -357,6 +357,73 @@ nav a:hover {
   color: #333;
 }
 
+/* ========= CHECKOUT FORM ========= */
+.checkout-form {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #f0f0f0;
+    font-family: var(--font-titles);
+}
+
+.form-group-checkout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding: 0 0.5rem;
+}
+
+.form-group-checkout label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-group-checkout input[type="text"] {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: var(--font-text);
+    font-size: 0.9rem;
+    width: 220px;
+    background-color: #fdfdfd;
+}
+
+.form-group-checkout input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-highlight); 
+    cursor: pointer;
+    background-color: #f5f5f5; 
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-left: 1rem;
+}
+
+.buy-button-container {
+    text-align: right;
+    margin-top: 1.5rem;
+}
+
+.btn-buy {
+    background-color: #c97b34;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    font-family: var(--font-titles);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-buy:hover {
+    background-color: #a1632a;
+}
+
 /* ========= INCREASE AND DECREASE BUTTONS (GENERAL) ========= */
 .btn-increase,
 .btn-decrease {

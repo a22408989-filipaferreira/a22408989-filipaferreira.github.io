@@ -53,6 +53,25 @@
             <ul class="cart-items-list">
                 <!-- generate products lines using JavaScript -->
             </ul>
+
+            <form class="checkout-form">
+                <div class="form-group-checkout">
+                    <label for="customer-name">Nome:</label>
+                    <input type="text" id="customer-name" name="customer_name" placeholder="O teu nome" required>
+                </div>
+                <div class="form-group-checkout">
+                    <label for="student-checkbox">És estudante do DEISI?</label>
+                    <input type="checkbox" id="student-checkbox" name="is_student">
+                </div>
+                <div class="form-group-checkout">
+                    <label for="coupon-code">Cupão de desconto:</label>
+                    <input type="text" id="coupon-code" name="coupon" placeholder="Ex: DEISI10" disabled>
+                </div>
+                
+                <div class="buy-button-container">
+                    <button type="submit" class="btn-buy">Comprar</button>
+                </div>
+            </form>
         </section>
     </main>
 

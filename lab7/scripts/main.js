@@ -5,10 +5,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const categoryFilter = document.querySelector("#category-filter");
     const sortBy = document.querySelector("#sort-by");
     const searchBar = document.querySelector("#search-bar");
+    const checkoutForm = document.querySelector(".checkout-form");
+    const customerNameInput = document.querySelector("#customer-name");
+    const studentCheckbox = document.querySelector("#student-checkbox");
+    const couponCode = document.querySelector("#coupon-code");
+    const buyButton = document.querySelector(".btn-buy");
+    const checkoutFeedback = document.createElement("div");
+    checkoutForm.prepend(checkoutFeedback);
 
     /* check if there are any product lists or items in the cart, categories,... */
-    if (!listOfProducts || !listOfItensCart || !categoryFilter || !sortBy || !searchBar) {
-        console.error("Erro: Um ou mais elementos (listas, carrinho ou filtros) não foram encontrados no HTML.");
+    if (!listOfProducts || !listOfItensCart || !categoryFilter || !sortBy || !searchBar || !checkoutForm || !customerNameInput) {
+        console.error("Erro: Um ou mais elementos (listas, carrinho, filtros ou formulário) não foram encontrados no HTML.");
         return;
     }
 
@@ -21,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* API URL to get products */
     const PRODUCTS_URL = 'https://deisishop.pythonanywhere.com/products/';
     const CATEGORIES_URL = 'https://deisishop.pythonanywhere.com/categories/';
+    const BUY_URL = 'https://deisishop.pythonanywhere.com/buy/';
 
     /* FUNCTIONS */
 
@@ -204,6 +212,17 @@ document.addEventListener("DOMContentLoaded", () => {
         atualizaCesto();
     }
 
+    /* control the check box */
+    function toggleCouponField() {
+        if (studentCheckbox.checked) {
+            couponCode.disabled = false;
+            couponCode.focus();
+        } else {
+            couponCode.disabled = true;
+            couponCode.value = "";
+        }
+    }
+
     /* EVENT LISTENERS */
 
     /* if the click is on an "Add to cart" button, adds the corresponding product to the cart. */
@@ -226,9 +245,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    categoryFilter.addEventListener("change", aplicarFiltros); 
+    categoryFilter.addEventListener("change", aplicarFiltros);
     sortBy.addEventListener("change", aplicarFiltros);
     searchBar.addEventListener("input", aplicarFiltros); /* input - event that occurs when the user types (in real time) */
+    checkoutForm.addEventListener("submit", handlePurchaseSubmit);
+    studentCheckbox.addEventListener("change", toggleCouponField);
 
     /* message "Loading" */
     listOfProducts.innerHTML = "<li>A carregar produtos...</li>";
@@ -270,6 +291,100 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Erro ao carregar categorias da API:", error);
             categoryFilter.innerHTML = "<option value=''>Erro ao carregar</option>";
         });
+
+    /* make the purchase */
+    async function handlePurchaseSubmit(event) {
+        event.preventDefault();
+
+        /* clear previous feedback and disable the button */
+        checkoutFeedback.innerHTML = "";
+        checkoutFeedback.className = "";
+        buyButton.disabled = true;
+        buyButton.textContent = "A processar...";
+
+        /* get cart products and form data */
+        const productIds = cart.map(item => item.id);
+
+        /* check if the cart is empty */
+        if (productIds.length === 0) {
+            checkoutFeedback.innerHTML = "O carrinho está vazio. Adicione produtos antes de comprar.";
+            checkoutFeedback.className = "feedback-error";
+            buyButton.disabled = false;
+            buyButton.textContent = "Comprar";
+            return;
+        }
+
+        /* get form data */
+        const nome = customerNameInput.value;
+        const isStudent = studentCheckbox.checked;
+        const coupon = couponCode.value
+
+        /* check if the name is filled in (required field in the API) */
+        if (!nome) {
+            checkoutFeedback.innerHTML = "O nome completo é obrigatório.";
+            checkoutFeedback.className = "feedback-error";
+            buyButton.disabled = false;
+            buyButton.textContent = "Comprar";
+            customerNameInput.focus();
+            return;
+        }
+
+        /* assemble the request body */
+        const requestBody = {
+            products: productIds,
+            student: isStudent,
+            coupon: coupon,
+            name: nome
+        };
+
+        /* make the fetch (POST) call with try...catch */
+        try {
+            const response = await fetch(BUY_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            /* read JSON response */
+            const data = await response.json();
+
+            /* show the message in case of error */
+            if (!response.ok) {
+                throw new Error(data.message || `Erro ${response.status}`);
+            }
+
+            /* sucess -> show the data and clear the cart. */
+            const successHtml = `
+                <h4>Compra efetuada!</h4>
+                <p>${data.message}</p>
+                <p><strong>Total Pago:</strong> € ${data.totalCost}</p>
+                <p><strong>Referência:</strong> ${data.reference}</p>
+                <p><em>${data.address}</em></p>
+            `;
+            checkoutFeedback.innerHTML = successHtml;
+            checkoutFeedback.className = "feedback-success";
+
+            /* deactivate the form after purchase */
+            buyButton.textContent = "Compra efetuada";
+            studentCheckbox.disabled = true;
+            couponCode.disabled = true;
+
+            /* clean the cart and update info in page */
+            cart = [];
+            guardarCesto();
+            atualizaCesto();
+
+        } catch (error) {
+            /* error -> show API error message */
+            checkoutFeedback.innerHTML = `<strong>Erro:</strong> ${error.message}`;
+            checkoutFeedback.className = "feedback-error";
+            buyButton.disabled = false;
+            buyButton.textContent = "Tentar Novamente";
+        }
+    }
 
     atualizaCesto();
 });
