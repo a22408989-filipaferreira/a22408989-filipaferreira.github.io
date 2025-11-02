@@ -2,10 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ELEMENTS */
     const listOfProducts = document.querySelector(".products-list");
     const listOfItensCart = document.querySelector(".cart-items-list");
+    const categoryFilter = document.querySelector("#category-filter");
+    const sortBy = document.querySelector("#sort-by");
+    const searchBar = document.querySelector("#search-bar");
 
-    /* check if there are any product lists or items in the cart */
-    if (!listOfProducts || !listOfItensCart) {
-        console.error("Erro: listas de produtos ou carrinho não encontradas no HTML.");
+    /* check if there are any product lists or items in the cart, categories,... */
+    if (!listOfProducts || !listOfItensCart || !categoryFilter || !sortBy || !searchBar) {
+        console.error("Erro: Um ou mais elementos (listas, carrinho ou filtros) não foram encontrados no HTML.");
         return;
     }
 
@@ -14,9 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let cart = JSON.parse(localStorage.getItem(CHAVE_STORAGE)) || [];
 
     /* variable for storing products coming from the API */
-    let produtos = []; 
+    let produtos = [];
     /* API URL to get products */
-    const API_URL = 'https://deisishop.pythonanywhere.com/products/';
+    const PRODUCTS_URL = 'https://deisishop.pythonanywhere.com/products/';
+    const CATEGORIES_URL = 'https://deisishop.pythonanywhere.com/categories/';
 
     /* FUNCTIONS */
 
@@ -48,17 +52,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* load the products on the page (in HTML) */
     function carregarProdutos(produtos) {
-        listOfProducts.innerHTML = ""; 
+        listOfProducts.innerHTML = "";
+
+        if (produtos.length === 0) {
+            listOfProducts.innerHTML = "<li>Nenhum produto encontrado com estes filtros.</li>";
+            return;
+        }
 
         produtos.forEach(produto => {
             const elementoArticle = criarProduto(produto);
-            
+
             const li = document.createElement("li");
-            li.dataset.id = produto.id; 
-            li.appendChild(elementoArticle); 
-            
+            li.dataset.id = produto.id;
+            li.appendChild(elementoArticle);
+
             listOfProducts.appendChild(li);
         });
+    }
+
+    /* load the categories in the select filter */
+    function carregarCategorias(categorias) {
+        categoryFilter.innerHTML = "";
+
+        const allOption = document.createElement("option");
+        allOption.value = "all";
+        allOption.textContent = "Todas as categorias";
+        categoryFilter.appendChild(allOption);
+
+        categorias.forEach(categoria => {
+            const option = document.createElement("option");
+
+            const textoCategoria = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+
+            option.value = categoria;
+            option.textContent = textoCategoria;
+            categoryFilter.appendChild(option);
+        });
+    }
+
+    /* function that applies the current filters */
+    function aplicarFiltros() {
+        /* get current values ​​in filters */
+        const categorySelected = categoryFilter.value;
+        const sortingTypeSelected = sortBy.value;
+        const termToSearch = searchBar.value.toLowerCase();
+
+        /* use a copy array so as not to alter the original array */
+        let productsFiltred = [...produtos];
+
+        /* apply category filter */
+        if (categorySelected !== "all") {
+            productsFiltred = productsFiltred.filter(p => {
+                return p.category === categorySelected;
+            });
+        }
+
+        /* apply search filter */
+        if (termToSearch) {
+            productsFiltred = productsFiltred.filter(p => {
+                return p.title.toLowerCase().includes(termToSearch);
+            });
+        }
+
+        /* apply sort */
+        if (sortingTypeSelected === "price-asc") {
+            /* sort from cheapest to most expensive */
+            productsFiltred.sort((a, b) => a.price - b.price);
+        } else if (sortingTypeSelected === "price-desc") {
+            /* sort from most expensive to least expensive */
+            productsFiltred.sort((a, b) => b.price - a.price);
+        }
+
+        /* reload the HTML list with the filtered products */
+        carregarProdutos(productsFiltred);
     }
 
     /* add an item to cart (in HTML) */
@@ -133,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cart[idx].quantidade <= 0) {
             cart.splice(idx, 1);
         }
-        
+
         guardarCesto();
         atualizaCesto();
     }
@@ -151,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     listOfItensCart.addEventListener("click", e => {
         const inc = e.target.closest(".btn-increase");
         const dec = e.target.closest(".btn-decrease");
-        
+
         if (inc) {
             adicionarAoCesto(inc.dataset.id);
         }
@@ -159,12 +225,18 @@ document.addEventListener("DOMContentLoaded", () => {
             removerDoCesto(dec.dataset.id);
         }
     });
-    
+
+    categoryFilter.addEventListener("change", aplicarFiltros); 
+    sortBy.addEventListener("change", aplicarFiltros);
+    searchBar.addEventListener("input", aplicarFiltros); /* input - event that occurs when the user types (in real time) */
+
     /* message "Loading" */
     listOfProducts.innerHTML = "<li>A carregar produtos...</li>";
 
-    /* make an AJAX (fetch) call to the API */
-    fetch(API_URL)
+    /* AJAX CALLS */
+
+    /* get products */
+    fetch(PRODUCTS_URL)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Erro de rede: ${response.statusText}`);
@@ -173,14 +245,30 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             /* save products - the API returns the products directly as an array */
-            produtos = data; 
-            
+            produtos = data;
+
             /* Load the products (in HTML) */
-            carregarProdutos(produtos); 
+            carregarProdutos(produtos);
         })
         .catch(error => {
             console.error("Erro ao carregar produtos da API:", error);
             listOfProducts.innerHTML = "<li>Ocorreu um erro ao carregar os produtos. Tente novamente mais tarde.</li>";
+        });
+
+    /* get categories */
+    fetch(CATEGORIES_URL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro de rede: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            carregarCategorias(data);
+        })
+        .catch(error => {
+            console.error("Erro ao carregar categorias da API:", error);
+            categoryFilter.innerHTML = "<option value=''>Erro ao carregar</option>";
         });
 
     atualizaCesto();

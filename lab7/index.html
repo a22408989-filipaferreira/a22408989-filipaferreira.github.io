@@ -24,14 +24,34 @@
     <main>
         <section id="products">
             <h2>Seleciona os teus productos</h2>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label for="category-filter">Filtrar</label>
+                    <select id="category-filter" name="category"><!-- generate categories using JavaScript --></select>
+                </div>
+                <div class="filter-group">
+                    <label for="sort-by">Ordenar</label>
+                    <select id="sort-by" name="sort">
+                        <option value="default">Ordenar pelo preço</option>
+                        <option value="price-asc">Preço (ascendente)</option>
+                        <option value="price-desc">Preço (descendente)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-bar">Procurar</label>
+                    <input type="text" id="search-bar" name="search" placeholder="Pesquise por produto">
+                </div>
+            </div>
+
             <ul class="products-list">
-                <!-- generate product cards using JavaScript -->
+                <!-- generate products cards using JavaScript -->
             </ul>
         </section>
         <section id="shoppingCart">
             <h2>Carrinho</h2>
             <ul class="cart-items-list">
-                <!-- generate product lines using JavaScript -->
+                <!-- generate products lines using JavaScript -->
             </ul>
         </section>
     </main>
@@ -42,7 +62,6 @@
         </footer>
     </section>
 
-    <script src="scripts/produtos.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 

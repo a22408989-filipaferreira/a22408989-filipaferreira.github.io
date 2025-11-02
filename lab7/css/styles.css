@@ -87,6 +87,53 @@ nav a:hover {
   color: var(--color-highlight);
 }
 
+/* ========== FILTERS BAR ========== */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar linha em ecrãs pequenos */
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem; /* Espaçamento entre os grupos de filtros */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); /* Sombra igual aos cards */
+    padding: 1.2rem 2rem;
+    margin: 2rem 4rem 2rem 4rem; /* Alinha com o padding da lista de produtos */
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Espaçamento entre o label e o input/select */
+}
+
+.filter-bar label {
+    font-family: var(--font-titles);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-dark);
+}
+
+.filter-bar select,
+.filter-bar input[type="text"] {
+    font-family: var(--font-text);
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fdfdfd;
+    color: #333;
+    cursor: pointer;
+}
+
+.filter-bar input[type="text"] {
+    cursor: text;
+}
+
+.filter-bar input[type="text"]::placeholder {
+    color: #999;
+}
+
 /* ========= PRODUCTS SECTION ========= */
 #products {
   padding-top: 8rem;
