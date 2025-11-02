@@ -1,0 +1,362 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+
+/* ========= VARIABLES ========= */
+:root {
+  /* is the same as the <html> selector */
+  --color-dark: #1a1a1a;
+  /* to background dark */
+  --color-light: #f5f5f5;
+  /* to background light */
+  --color-highlight: #b45309;
+  /* to highlight words */
+  --color-neutral: #e0e0e0;
+  /* to neutralize contrasts (background) */
+  --font-text: 'Libre Baskerville', serif;
+  /* for information */
+  --font-titles: 'Inter', sans-serif;
+  /* for titles */
+}
+
+/* ========= DEFAULT VALUES ========= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+}
+
+section {
+  width: 100%;
+  background: var(--color-light);
+}
+
+main {
+  text-align: center;
+}
+
+h2 {
+  color: var(--color-dark);
+  font-family: var(--font-titles);
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+/* ========= NAVBAR ========= */
+.navbar {
+  background-color: var(--color-dark);
+  position: fixed;
+  /* to continue to always appear at the top of the screen with its own scroll */
+  z-index: 4;
+  /* to stay on top of the background image */
+  display: flex;
+  padding: 1.2rem 2rem;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+  width: calc(100% - 8rem);
+  margin: 2rem 4rem;
+}
+
+.logo {
+  color: var(--color-light);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 4rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: var(--color-light);
+}
+
+nav a:hover {
+  color: var(--color-highlight);
+}
+
+/* ========= PRODUCTS SECTION ========= */
+#products {
+  padding-top: 8rem;
+}
+
+.products-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 2rem 4rem;
+  margin: 0;
+}
+
+.product-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  width: 100%;
+  height: 560px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-top: 3.5rem;
+  overflow: hidden;
+}
+
+.product-category-tag {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: rgba(51, 51, 51, 0.8);
+  font-family: var(--font-text);
+  font-size: 0.80rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  width: 90%;
+}
+
+.image-container {
+  width: 100%;
+  height: 200px;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-titles);
+  font-size: 1rem;
+  text-align: left;
+  padding: 0.5rem 1.5rem;
+}
+
+.product-desc {
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+  color: #444;
+  text-align: left;
+  padding: 0.5rem 1.5rem;
+  height: 150px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.product-category {
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  text-align: left;
+  padding: 1rem 1.5rem 0 1.5rem;
+  margin: 0;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  margin-top: auto; /* pushes the footer to the bottom of the card */
+}
+
+.product-price {
+  font-family: var(--font-text);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ========= SCROLLS ========= */
+
+/* scrollbar styles - Firefox */
+.product-desc:hover {
+  scrollbar-color: #c1c1c1 #f0f0f0;
+}
+
+/* NOTE - WebKit is the rendering engine used by some browsers to display web pages */
+
+/* scrollbar styles - Chrome, Safari */
+.product-desc::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+
+/* styles for the part that moves the scroll within the scrollbar - Chrome, Safari */
+.product-desc::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 4px;
+}
+
+/* scrollbar styles (Hover) - Chrome, Safari */
+.product-desc:hover::-webkit-scrollbar {
+  background-color: #f0f0f0;
+}
+
+/* styles for the part that moves the scroll within the scrollbar (Hover) - Chrome, Safari*/
+.product-desc:hover::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+}
+
+/* ========= ADD TO CART BUTTON ========= */
+.add-to-cart-btn {
+  background-color: #c97b34;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #a1632a;
+}
+
+/* ========= SHOPPING CART SECTION ========= */
+#shoppingCart {
+  padding-top: 4rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem auto;
+  background-color: #ffffff;
+  padding: 2rem;
+}
+
+#shoppingCart h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.cart-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-item-name {
+  font-family: var(--font-text);
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  flex-grow: 1;
+  margin-right: 1rem;
+}
+
+.cart-item-price {
+  font-family: var(--font-text);
+  font-size: 1.1rem;
+  color: #555;
+  font-weight: 600;
+  margin-right: 1.5rem;
+  min-width: 80px;
+  text-align: right;
+}
+
+.cart-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cart-total {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #333;
+  text-align: right;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ========= INCREASE AND DECREASE BUTTONS (GENERAL) ========= */
+.btn-increase,
+.btn-decrease {
+  border: none;
+  border-radius: 50%;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 30px;
+  height: 30px;
+  font-size: 1.2rem;
+  line-height: 28px; /* adjusted for vertical alignment */
+  text-align: center;
+  padding: 0;
+}
+
+/* ========= INCREASE BUTTON ========= */
+.btn-increase {
+  background-color: #c97b34;
+  color: white;
+}
+
+.btn-increase:hover {
+  background-color: #a1632a;
+}
+
+/* ========= DECREASE BUTTON ========= */
+.btn-decrease {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-decrease:hover {
+  background-color: #e0e0e0;
+}
+
+/* ========= FOOTER SECTION ========= */
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  background: var(--color-dark);
+}
+
+.footer p {
+  font-family: var(--font-titles);
+  color: var(--color-light);
+}
